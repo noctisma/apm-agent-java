@@ -19,9 +19,7 @@
  */
 package co.elastic.apm.agent.report.serialize;
 
-import co.elastic.apm.agent.impl.MetaData;
 import co.elastic.apm.agent.impl.error.ErrorCapture;
-import co.elastic.apm.agent.impl.payload.Payload;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.Transaction;
 
@@ -30,16 +28,12 @@ import java.io.OutputStream;
 
 public interface PayloadSerializer {
 
-    void serializePayload(OutputStream os, Payload payload) throws IOException;
-
     /**
      * Sets the output stream which the {@code *NdJson} methods should write to.
      *
      * @param os
      */
     void setOutputStream(OutputStream os);
-
-    void serializeMetaDataNdJson(MetaData metaData);
 
     void serializeTransactionNdJson(Transaction transaction);
 

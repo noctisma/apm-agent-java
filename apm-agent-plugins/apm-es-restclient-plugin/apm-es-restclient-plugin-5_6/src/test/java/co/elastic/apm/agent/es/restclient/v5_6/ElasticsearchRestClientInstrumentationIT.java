@@ -21,7 +21,6 @@ package co.elastic.apm.agent.es.restclient.v5_6;
 
 import co.elastic.apm.agent.AbstractInstrumentationTest;
 import co.elastic.apm.agent.impl.error.ErrorCapture;
-import co.elastic.apm.agent.impl.transaction.Db;
 import co.elastic.apm.agent.impl.transaction.Http;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.TraceContext;

@@ -22,7 +22,6 @@ package co.elastic.apm.agent.impl.error;
 import co.elastic.apm.agent.configuration.CoreConfiguration;
 import co.elastic.apm.agent.impl.ElasticApmTracer;
 import co.elastic.apm.agent.impl.context.TransactionContext;
-import co.elastic.apm.agent.impl.stacktrace.StacktraceConfiguration;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
 import co.elastic.apm.agent.impl.transaction.TraceContextHolder;
@@ -147,15 +146,6 @@ public class ErrorCapture implements Recyclable {
         } else {
             this.exception = e;
         }
-    }
-
-    public StringBuilder getCulprit() {
-        // lazily resolve culprit so that java.lang.Throwable.getStackTrace is called outside the application thread
-        final Collection<String> applicationPackages = tracer.getConfig(StacktraceConfiguration.class).getApplicationPackages();
-        if (exception != null && culprit.length() == 0 && !applicationPackages.isEmpty()) {
-            computeCulprit(exception, applicationPackages);
-        }
-        return culprit;
     }
 
     private void computeCulprit(Throwable exception, Collection<String> applicationPackages) {

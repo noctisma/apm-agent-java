@@ -28,7 +28,6 @@ import co.elastic.apm.agent.impl.async.SpanInScopeRunnableWrapper;
 import co.elastic.apm.agent.impl.error.ErrorCapture;
 import co.elastic.apm.agent.impl.sampling.ProbabilitySampler;
 import co.elastic.apm.agent.impl.sampling.Sampler;
-import co.elastic.apm.agent.impl.stacktrace.StacktraceConfiguration;
 import co.elastic.apm.agent.impl.transaction.AbstractSpan;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
@@ -74,7 +73,6 @@ public class ElasticApmTracer {
     private static final int MAX_POOLED_RUNNABLES = 256;
 
     private final ConfigurationRegistry configurationRegistry;
-    private final StacktraceConfiguration stacktraceConfiguration;
     private final ObjectPool<Transaction> transactionPool;
     private final ObjectPool<Span> spanPool;
     private final ObjectPool<ErrorCapture> errorPool;
@@ -109,7 +107,6 @@ public class ElasticApmTracer {
     ElasticApmTracer(ConfigurationRegistry configurationRegistry, Reporter reporter) {
         this.configurationRegistry = configurationRegistry;
         this.reporter = reporter;
-        this.stacktraceConfiguration = configurationRegistry.getConfig(StacktraceConfiguration.class);
         int maxPooledElements = configurationRegistry.getConfig(ReporterConfiguration.class).getMaxQueueSize() * 2;
         coreConfiguration = configurationRegistry.getConfig(CoreConfiguration.class);
         transactionPool = QueueBasedObjectPool.ofRecyclable(AtomicQueueFactory.<Transaction>newQueue(createBoundedMpmc(maxPooledElements)), false,
@@ -364,12 +361,12 @@ public class ElasticApmTracer {
     @SuppressWarnings("ReferenceEquality")
     public void endSpan(Span span) {
         if (span.isSampled()) {
-            long spanFramesMinDurationMs = stacktraceConfiguration.getSpanFramesMinDurationMs();
-            if (spanFramesMinDurationMs != 0 && span.isSampled()) {
-                if (span.getDuration() >= spanFramesMinDurationMs) {
-                    span.withStacktrace(new Throwable());
-                }
-            }
+//            long spanFramesMinDurationMs = stacktraceConfiguration.getSpanFramesMinDurationMs();
+//            if (spanFramesMinDurationMs != 0 && span.isSampled()) {
+//                if (span.getDuration() >= spanFramesMinDurationMs) {
+//                    span.withStacktrace(new Throwable());
+//                }
+//            }
             reporter.report(span);
         } else {
             span.recycle();

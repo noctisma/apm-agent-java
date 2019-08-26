@@ -19,59 +19,15 @@
  */
 package co.elastic.apm.agent.report;
 
-import co.elastic.apm.agent.configuration.CoreConfiguration;
-import co.elastic.apm.agent.impl.payload.ServiceFactory;
-import co.elastic.apm.agent.impl.payload.SystemInfo;
-import co.elastic.apm.agent.impl.stacktrace.StacktraceConfiguration;
-import co.elastic.apm.agent.report.processor.ProcessorEventHandler;
-import co.elastic.apm.agent.report.serialize.DslJsonSerializer;
-import co.elastic.apm.agent.util.VersionUtils;
 import org.stagemonitor.configuration.ConfigurationRegistry;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 public class ReporterFactory {
 
     public Reporter createReporter(ConfigurationRegistry configurationRegistry, @Nullable String frameworkName,
                                    @Nullable String frameworkVersion) {
-        final ReporterConfiguration reporterConfiguration = configurationRegistry.getConfig(ReporterConfiguration.class);
-        ExecutorService healthCheckExecutorService = Executors.newFixedThreadPool(1, new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                final Thread thread = new Thread(r);
-                thread.setName("apm-server-healthcheck");
-                thread.setDaemon(true);
-                return thread;
-            }
-        });
-        healthCheckExecutorService.submit(new ApmServerHealthChecker(reporterConfiguration));
-        healthCheckExecutorService.shutdown();
-        final ReportingEventHandler reportingEventHandler = getReportingEventHandler(configurationRegistry, frameworkName,
-            frameworkVersion, reporterConfiguration);
-        return new ApmServerReporter(true, reporterConfiguration, reportingEventHandler);
-    }
-
-    @Nonnull
-    private ReportingEventHandler getReportingEventHandler(ConfigurationRegistry configurationRegistry, @Nullable String frameworkName,
-                                                           @Nullable String frameworkVersion, ReporterConfiguration reporterConfiguration) {
-
-        final DslJsonSerializer payloadSerializer = new DslJsonSerializer(
-            configurationRegistry.getConfig(StacktraceConfiguration.class));
-        final co.elastic.apm.agent.impl.payload.Service service = new ServiceFactory().createService(configurationRegistry.getConfig(CoreConfiguration.class), frameworkName, frameworkVersion);
-        final ProcessorEventHandler processorEventHandler = ProcessorEventHandler.loadProcessors(configurationRegistry);
-        return new IntakeV2ReportingEventHandler(reporterConfiguration,
-            processorEventHandler, payloadSerializer);
-    }
-
-    private String getUserAgent() {
-        String agentVersion = VersionUtils.getAgentVersion();
-        if (agentVersion != null) {
-            return "apm-agent-java " + agentVersion;
-        }
-        return "apm-agent-java";
+//        return new ApmServerReporter(true, reporterConfiguration, reportingEventHandler);
+        return new LocalLogReporter();
     }
 }

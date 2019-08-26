@@ -259,21 +259,6 @@ public class ApmSpanInstrumentation extends OpenTracingBridgeInstrumentation {
             } else if ("sampling.priority".equals(key)) {
                 // mid-trace sampling is not allowed
                 return true;
-            } else if ("db.type".equals(key)) {
-                span.getContext().getDb().withType(value.toString());
-                if (isCache(value)) {
-                    span.withType("cache").withSubtype(value.toString());
-                } else {
-                    span.withType("db").withSubtype(value.toString());
-                }
-                return true;
-            } else if ("db.instance".equals(key)) {
-                span.getContext().getDb().withInstance(value.toString());
-                return true;
-            } else if ("db.statement".equals(key)) {
-                span.getContext().getDb().withStatement(value.toString());
-                span.withAction("query");
-                return true;
             } else if ("span.kind".equals(key)) {
                 if (span.getType() == null && ("producer".equals(value) || "client".equals(value))) {
                     span.withType("ext");
