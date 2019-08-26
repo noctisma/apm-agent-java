@@ -160,7 +160,7 @@ public class IntakeV2ReportingEventHandler implements ReportingEventHandler {
         try {
             if (connection == null) {
                 connection = startRequest();
-                payloadSerializer.serializeMetaDataNdJson(metaData);
+//                payloadSerializer.serializeMetaDataNdJson(metaData);
             }
             writeEvent(event);
         } catch (Exception e) {

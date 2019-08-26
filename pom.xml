@@ -5,7 +5,7 @@
     <groupId>co.elastic.apm</groupId>
     <artifactId>apm-agent-parent</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>1.6.1</version>
+    <version>1.6.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2018</inceptionYear>
     <organization>
@@ -27,7 +27,7 @@
         <connection>scm:git:git@github.com:elastic/apm-agent-java.git</connection>
         <developerConnection>scm:git:git@github.com:elastic/apm-agent-java.git</developerConnection>
         <url>https://github.com/elastic/apm-agent-java</url>
-        <tag>v1.6.1</tag>
+        <tag>v1.6.2-SNAPSHOT</tag>
     </scm>
 
     <developers>
@@ -82,11 +82,11 @@
     <modules>
         <module>apm-agent-core</module>
         <module>elastic-apm-agent</module>
-        <module>apm-agent-benchmarks</module>
+        <!--<module>apm-agent-benchmarks</module>-->
         <module>apm-agent-plugins</module>
         <module>apm-agent-api</module>
         <module>apm-opentracing</module>
-        <module>integration-tests</module>
+        <!--<module>integration-tests</module>-->
         <module>apm-agent-attach</module>
     </modules>
 
