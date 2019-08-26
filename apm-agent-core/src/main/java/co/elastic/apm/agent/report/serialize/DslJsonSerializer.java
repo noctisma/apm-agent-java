@@ -47,7 +47,6 @@ import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.SpanCount;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
 import co.elastic.apm.agent.impl.transaction.Transaction;
-import co.elastic.apm.agent.metrics.MetricRegistry;
 import co.elastic.apm.agent.util.PotentiallyMultiValuedMap;
 import com.dslplatform.json.BoolConverter;
 import com.dslplatform.json.DslJson;
@@ -196,11 +195,6 @@ public class DslJsonSerializer implements PayloadSerializer {
     @Override
     public int getBufferSize() {
         return jw.size();
-    }
-
-    @Override
-    public void serializeMetrics(MetricRegistry metricRegistry) {
-        MetricRegistrySerializer.serialize(metricRegistry, replaceBuilder, jw);
     }
 
     private void serializeErrorPayload(ErrorPayload payload) {

@@ -22,9 +22,7 @@ package co.elastic.apm.agent.report;
 import co.elastic.apm.agent.impl.error.ErrorCapture;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.Transaction;
-import co.elastic.apm.agent.metrics.MetricRegistry;
 import co.elastic.apm.agent.report.disruptor.ExponentionallyIncreasingSleepingWaitStrategy;
-import co.elastic.apm.agent.util.ExecutorUtils;
 import co.elastic.apm.agent.util.MathUtils;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventTranslator;
@@ -238,24 +236,6 @@ public class ApmServerReporter implements Reporter {
         }
         if (syncReport) {
             waitForFlush();
-        }
-    }
-
-    @Override
-    public void scheduleMetricReporting(final MetricRegistry metricRegistry, long intervalMs) {
-        if (intervalMs > 0 && metricsReportingScheduler == null) {
-            metricsReportingScheduler = ExecutorUtils.createSingleThreadSchedulingDeamonPool("apm-metrics-reporter", 1);
-            metricsReportingScheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    disruptor.getRingBuffer().tryPublishEvent(new EventTranslatorOneArg<ReportingEvent, MetricRegistry>() {
-                        @Override
-                        public void translateTo(ReportingEvent event, long sequence, MetricRegistry metricRegistry) {
-                            event.reportMetrics(metricRegistry);
-                        }
-                    }, metricRegistry);
-                }
-            }, intervalMs, intervalMs, TimeUnit.MILLISECONDS);
         }
     }
 

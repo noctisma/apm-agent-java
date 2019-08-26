@@ -65,7 +65,6 @@ public class IntakeV2ReportingEventHandler implements ReportingEventHandler {
 
     private final ReporterConfiguration reporterConfiguration;
     private final ProcessorEventHandler processorEventHandler;
-    private final MetaData metaData;
     private final PayloadSerializer payloadSerializer;
     private final Timer timeoutTimer;
     private final CyclicIterator<URL> serverUrlIterator;
@@ -84,19 +83,18 @@ public class IntakeV2ReportingEventHandler implements ReportingEventHandler {
     private int errorCount;
     private volatile boolean shutDown;
 
-    public IntakeV2ReportingEventHandler(Service service, ProcessInfo process, SystemInfo system,
+    public IntakeV2ReportingEventHandler(
                                          ReporterConfiguration reporterConfiguration, ProcessorEventHandler processorEventHandler,
                                          PayloadSerializer payloadSerializer) {
-        this(service, process, system, reporterConfiguration, processorEventHandler, payloadSerializer, shuffleUrls(reporterConfiguration));
+        this(reporterConfiguration, processorEventHandler, payloadSerializer, shuffleUrls(reporterConfiguration));
     }
 
-    IntakeV2ReportingEventHandler(Service service, ProcessInfo process, SystemInfo system,
+    IntakeV2ReportingEventHandler(
                                   ReporterConfiguration reporterConfiguration, ProcessorEventHandler processorEventHandler,
                                   PayloadSerializer payloadSerializer, List<URL> serverUrls) {
         this.reporterConfiguration = reporterConfiguration;
         this.processorEventHandler = processorEventHandler;
         this.payloadSerializer = payloadSerializer;
-        this.metaData = new MetaData(process, service, system);
         this.deflater = new Deflater(GZIP_COMPRESSION_LEVEL);
         this.timeoutTimer = new Timer("apm-request-timeout-timer", true);
         this.serverUrlIterator = new CyclicIterator<>(serverUrls);
@@ -196,8 +194,6 @@ public class IntakeV2ReportingEventHandler implements ReportingEventHandler {
             currentlyTransmitting++;
             payloadSerializer.serializeErrorNdJson(event.getError());
             event.getError().recycle();
-        } else if (event.getMetricRegistry() != null) {
-            payloadSerializer.serializeMetrics(event.getMetricRegistry());
         }
     }
 

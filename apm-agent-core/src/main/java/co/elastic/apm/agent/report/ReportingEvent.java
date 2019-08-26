@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,13 +22,11 @@ package co.elastic.apm.agent.report;
 import co.elastic.apm.agent.impl.error.ErrorCapture;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.Transaction;
-import co.elastic.apm.agent.metrics.MetricRegistry;
 
 import javax.annotation.Nullable;
 
 import static co.elastic.apm.agent.report.ReportingEvent.ReportingEventType.ERROR;
 import static co.elastic.apm.agent.report.ReportingEvent.ReportingEventType.FLUSH;
-import static co.elastic.apm.agent.report.ReportingEvent.ReportingEventType.METRICS;
 import static co.elastic.apm.agent.report.ReportingEvent.ReportingEventType.SHUTDOWN;
 import static co.elastic.apm.agent.report.ReportingEvent.ReportingEventType.SPAN;
 import static co.elastic.apm.agent.report.ReportingEvent.ReportingEventType.TRANSACTION;
@@ -42,15 +40,12 @@ public class ReportingEvent {
     private ErrorCapture error;
     @Nullable
     private Span span;
-    @Nullable
-    private MetricRegistry metricRegistry;
 
     public void resetState() {
         this.transaction = null;
         this.type = null;
         this.error = null;
         this.span = null;
-        this.metricRegistry = null;
     }
 
     @Nullable
@@ -92,21 +87,11 @@ public class ReportingEvent {
         this.type = SPAN;
     }
 
-    public void reportMetrics(MetricRegistry metricRegistry) {
-        this.metricRegistry = metricRegistry;
-        this.type = METRICS;
-    }
-
     public void shutdownEvent() {
         this.type = SHUTDOWN;
     }
 
-    @Nullable
-    public MetricRegistry getMetricRegistry() {
-        return metricRegistry;
-    }
-
     enum ReportingEventType {
-        FLUSH, TRANSACTION, SPAN, ERROR, METRICS, SHUTDOWN
+        FLUSH, TRANSACTION, SPAN, ERROR, SHUTDOWN
     }
 }

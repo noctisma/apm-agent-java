@@ -21,7 +21,6 @@ package co.elastic.apm.agent.impl;
 
 import co.elastic.apm.agent.configuration.CoreConfiguration;
 import co.elastic.apm.agent.configuration.ServiceNameUtil;
-import co.elastic.apm.agent.context.LifecycleListener;
 import co.elastic.apm.agent.impl.async.ContextInScopeCallableWrapper;
 import co.elastic.apm.agent.impl.async.ContextInScopeRunnableWrapper;
 import co.elastic.apm.agent.impl.async.SpanInScopeCallableWrapper;
@@ -35,7 +34,6 @@ import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
 import co.elastic.apm.agent.impl.transaction.TraceContextHolder;
 import co.elastic.apm.agent.impl.transaction.Transaction;
-import co.elastic.apm.agent.metrics.MetricRegistry;
 import co.elastic.apm.agent.objectpool.Allocator;
 import co.elastic.apm.agent.objectpool.ObjectPool;
 import co.elastic.apm.agent.objectpool.impl.QueueBasedObjectPool;
@@ -77,7 +75,6 @@ public class ElasticApmTracer {
 
     private final ConfigurationRegistry configurationRegistry;
     private final StacktraceConfiguration stacktraceConfiguration;
-    private final Iterable<LifecycleListener> lifecycleListeners;
     private final ObjectPool<Transaction> transactionPool;
     private final ObjectPool<Span> spanPool;
     private final ObjectPool<ErrorCapture> errorPool;
@@ -105,17 +102,14 @@ public class ElasticApmTracer {
 
     private final CoreConfiguration coreConfiguration;
     private final List<ActivationListener> activationListeners;
-    private final MetricRegistry metricRegistry;
     private Sampler sampler;
     boolean assertionsEnabled = false;
     private static final WeakConcurrentMap<ClassLoader, String> serviceNameByClassLoader = new WeakConcurrentMap.WithInlinedExpunction<>();
 
-    ElasticApmTracer(ConfigurationRegistry configurationRegistry, Reporter reporter, Iterable<LifecycleListener> lifecycleListeners) {
-        this.metricRegistry = new MetricRegistry(configurationRegistry.getConfig(ReporterConfiguration.class));
+    ElasticApmTracer(ConfigurationRegistry configurationRegistry, Reporter reporter) {
         this.configurationRegistry = configurationRegistry;
         this.reporter = reporter;
         this.stacktraceConfiguration = configurationRegistry.getConfig(StacktraceConfiguration.class);
-        this.lifecycleListeners = lifecycleListeners;
         int maxPooledElements = configurationRegistry.getConfig(ReporterConfiguration.class).getMaxQueueSize() * 2;
         coreConfiguration = configurationRegistry.getConfig(CoreConfiguration.class);
         transactionPool = QueueBasedObjectPool.ofRecyclable(AtomicQueueFactory.<Transaction>newQueue(createBoundedMpmc(maxPooledElements)), false,
@@ -177,11 +171,7 @@ public class ElasticApmTracer {
                 sampler = ProbabilitySampler.of(newValue);
             }
         });
-        for (LifecycleListener lifecycleListener : lifecycleListeners) {
-            lifecycleListener.start(this);
-        }
         this.activationListeners = DependencyInjectingServiceLoader.load(ActivationListener.class, this);
-        reporter.scheduleMetricReporting(metricRegistry, configurationRegistry.getConfig(ReporterConfiguration.class).getMetricsIntervalMs());
 
         // sets the assertionsEnabled flag to true if indeed enabled
         assert assertionsEnabled = true;
@@ -453,9 +443,6 @@ public class ElasticApmTracer {
             transactionPool.close();
             spanPool.close();
             errorPool.close();
-            for (LifecycleListener lifecycleListener : lifecycleListeners) {
-                lifecycleListener.stop();
-            }
         } catch (Exception e) {
             logger.warn("Suppressed exception while calling stop()", e);
         }
@@ -506,10 +493,6 @@ public class ElasticApmTracer {
                 throw new AssertionError();
             }
         }
-    }
-
-    public MetricRegistry getMetricRegistry() {
-        return metricRegistry;
     }
 
     /**

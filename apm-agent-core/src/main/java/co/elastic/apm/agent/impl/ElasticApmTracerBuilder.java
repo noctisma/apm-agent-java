@@ -25,7 +25,6 @@ import co.elastic.apm.agent.configuration.CoreConfiguration;
 import co.elastic.apm.agent.configuration.PrefixingConfigurationSourceWrapper;
 import co.elastic.apm.agent.configuration.source.PropertyFileConfigurationSource;
 import co.elastic.apm.agent.configuration.source.SystemPropertyConfigurationSource;
-import co.elastic.apm.agent.context.LifecycleListener;
 import co.elastic.apm.agent.logging.LoggingConfiguration;
 import co.elastic.apm.agent.report.Reporter;
 import co.elastic.apm.agent.report.ReporterFactory;
@@ -53,8 +52,6 @@ public class ElasticApmTracerBuilder {
     private ConfigurationRegistry configurationRegistry;
     @Nullable
     private Reporter reporter;
-    @Nullable
-    private Iterable<LifecycleListener> lifecycleListeners;
     private Map<String, String> inlineConfig = new HashMap<>();
     @Nullable
     private final String agentArguments;
@@ -80,11 +77,6 @@ public class ElasticApmTracerBuilder {
         return this;
     }
 
-    public ElasticApmTracerBuilder lifecycleListeners(List<LifecycleListener> lifecycleListeners) {
-        this.lifecycleListeners = lifecycleListeners;
-        return this;
-    }
-
     public ElasticApmTracerBuilder withConfig(String key, String value) {
         inlineConfig.put(key, value);
         return this;
@@ -98,10 +90,7 @@ public class ElasticApmTracerBuilder {
         if (reporter == null) {
             reporter = new ReporterFactory().createReporter(configurationRegistry, null, null);
         }
-        if (lifecycleListeners == null) {
-            lifecycleListeners = ServiceLoader.load(LifecycleListener.class, getClass().getClassLoader());
-        }
-        return new ElasticApmTracer(configurationRegistry, reporter, lifecycleListeners);
+        return new ElasticApmTracer(configurationRegistry, reporter);
     }
 
     private ConfigurationRegistry getDefaultConfigurationRegistry(List<ConfigurationSource> configSources) {

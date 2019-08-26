@@ -20,8 +20,6 @@
 package co.elastic.apm.agent.report;
 
 import co.elastic.apm.agent.configuration.CoreConfiguration;
-import co.elastic.apm.agent.impl.payload.ProcessFactory;
-import co.elastic.apm.agent.impl.payload.ProcessInfo;
 import co.elastic.apm.agent.impl.payload.ServiceFactory;
 import co.elastic.apm.agent.impl.payload.SystemInfo;
 import co.elastic.apm.agent.impl.stacktrace.StacktraceConfiguration;
@@ -64,12 +62,8 @@ public class ReporterFactory {
         final DslJsonSerializer payloadSerializer = new DslJsonSerializer(
             configurationRegistry.getConfig(StacktraceConfiguration.class));
         final co.elastic.apm.agent.impl.payload.Service service = new ServiceFactory().createService(configurationRegistry.getConfig(CoreConfiguration.class), frameworkName, frameworkVersion);
-        final ProcessInfo processInformation = ProcessFactory.ForCurrentVM.INSTANCE.getProcessInformation();
         final ProcessorEventHandler processorEventHandler = ProcessorEventHandler.loadProcessors(configurationRegistry);
-        if (!reporterConfiguration.isIncludeProcessArguments()) {
-            processInformation.getArgv().clear();
-        }
-        return new IntakeV2ReportingEventHandler(service, processInformation, SystemInfo.create(), reporterConfiguration,
+        return new IntakeV2ReportingEventHandler(reporterConfiguration,
             processorEventHandler, payloadSerializer);
     }
 

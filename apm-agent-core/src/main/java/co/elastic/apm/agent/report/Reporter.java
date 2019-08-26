@@ -22,7 +22,6 @@ package co.elastic.apm.agent.report;
 import co.elastic.apm.agent.impl.error.ErrorCapture;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.Transaction;
-import co.elastic.apm.agent.metrics.MetricRegistry;
 
 import java.io.Closeable;
 import java.util.concurrent.Future;
@@ -42,6 +41,4 @@ public interface Reporter extends Closeable {
     void close();
 
     void report(ErrorCapture error);
-
-    void scheduleMetricReporting(MetricRegistry metricRegistry, long intervalMs);
 }
