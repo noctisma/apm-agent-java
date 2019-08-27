@@ -26,6 +26,9 @@ import co.elastic.apm.agent.impl.transaction.Transaction;
 import java.io.Closeable;
 import java.util.concurrent.Future;
 
+/**
+ * 数据上报接口，用于上报apm数据
+ */
 public interface Reporter extends Closeable {
     void report(Transaction transaction);
 

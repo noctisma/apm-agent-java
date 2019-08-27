@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.servlet;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.impl.ElasticApmTracer;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.method.MethodDescription;
@@ -40,7 +40,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 /**
  * Instruments {@link javax.servlet.FilterChain}s to create transactions.
  */
-public class FilterChainInstrumentation extends ElasticApmInstrumentation {
+public class FilterChainInstrumentation extends SophonApmInstrumentation {
 
     public FilterChainInstrumentation(ElasticApmTracer tracer) {
         ServletApiAdvice.init(tracer);

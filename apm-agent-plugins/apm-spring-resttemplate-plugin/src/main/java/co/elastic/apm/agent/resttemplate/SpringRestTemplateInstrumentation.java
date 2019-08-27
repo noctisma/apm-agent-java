@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.resttemplate;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.http.client.HttpClientHelper;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
@@ -46,7 +46,7 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
 import static net.bytebuddy.matcher.ElementMatchers.returns;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class SpringRestTemplateInstrumentation extends ElasticApmInstrumentation {
+public class SpringRestTemplateInstrumentation extends SophonApmInstrumentation {
 
     @Advice.OnMethodEnter(suppress = Throwable.class)
     private static void beforeExecute(@Advice.This ClientHttpRequest request,

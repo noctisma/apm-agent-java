@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.servlet;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.impl.ElasticApmTracer;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.method.MethodDescription;
@@ -46,7 +46,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
  * this makes sure to record a transaction in that case.
  * </p>
  */
-public class ServletInstrumentation extends ElasticApmInstrumentation {
+public class ServletInstrumentation extends SophonApmInstrumentation {
 
     static final String SERVLET_API = "servlet-api";
 

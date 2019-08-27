@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.httpclient;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.NamedElement;
@@ -42,7 +42,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 /**
  * In versions 4.0.1 or lower, the headers are not automatically copied to redirected HttpRequests, so this copies them over
  */
-public class ApacheHttpAsyncClientRedirectInstrumentation extends ElasticApmInstrumentation {
+public class ApacheHttpAsyncClientRedirectInstrumentation extends SophonApmInstrumentation {
 
     private static class ApacheHttpAsyncClientRedirectAdvice {
         @Advice.OnMethodExit(suppress = Throwable.class)

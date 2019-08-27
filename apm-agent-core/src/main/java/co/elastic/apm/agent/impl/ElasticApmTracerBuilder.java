@@ -19,8 +19,8 @@
  */
 package co.elastic.apm.agent.impl;
 
-import co.elastic.apm.agent.bci.ElasticApmAgent;
-import co.elastic.apm.agent.configuration.AgentArgumentsConfigurationSource;
+import co.elastic.apm.agent.bci.SophonApmAgent;
+import co.elastic.apm.agent.configuration.source.AgentArgumentsConfigurationSource;
 import co.elastic.apm.agent.configuration.CoreConfiguration;
 import co.elastic.apm.agent.configuration.PrefixingConfigurationSourceWrapper;
 import co.elastic.apm.agent.configuration.source.PropertyFileConfigurationSource;
@@ -88,7 +88,7 @@ public class ElasticApmTracerBuilder {
             configurationRegistry = getDefaultConfigurationRegistry(configSources);
         }
         if (reporter == null) {
-            reporter = new ReporterFactory().createReporter(configurationRegistry, null, null);
+            reporter = new ReporterFactory().createReporter(configurationRegistry);
         }
         return new ElasticApmTracer(configurationRegistry, reporter);
     }
@@ -133,7 +133,7 @@ public class ElasticApmTracerBuilder {
                 return "Inline configuration";
             }
         });
-        String agentHome = ElasticApmAgent.getAgentHome();
+        String agentHome = SophonApmAgent.getAgentHome();
         if (agentHome != null && PropertyFileConfigurationSource.isPresent(agentHome + "/elasticapm.properties")) {
             result.add(new PropertyFileConfigurationSource(agentHome + "/elasticapm.properties"));
         }

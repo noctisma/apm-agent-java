@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.spring.webmvc;
 
-import co.elastic.apm.agent.bci.ElasticApmAgent;
+import co.elastic.apm.agent.bci.SophonApmAgent;
 import co.elastic.apm.agent.configuration.SpyConfiguration;
 import co.elastic.apm.agent.impl.ElasticApmTracer;
 import co.elastic.apm.agent.impl.ElasticApmTracerBuilder;
@@ -51,13 +51,13 @@ class ApmHandlerInterceptorTest {
         tracer = new ElasticApmTracerBuilder()
             .configurationRegistry(SpyConfiguration.createSpyConfig())
             .build();
-        ElasticApmAgent.initInstrumentation(tracer, ByteBuddyAgent.install(),
+        SophonApmAgent.initInstrumentation(tracer, ByteBuddyAgent.install(),
             Arrays.asList(new ServletInstrumentation(tracer), new SpringTransactionNameInstrumentation()));
     }
 
     @AfterAll
     static void afterAll() {
-        ElasticApmAgent.reset();
+        SophonApmAgent.reset();
     }
 
     @BeforeEach

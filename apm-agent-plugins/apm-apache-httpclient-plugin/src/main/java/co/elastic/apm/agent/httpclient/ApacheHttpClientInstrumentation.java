@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.httpclient;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.http.client.HttpClientHelper;
 import co.elastic.apm.agent.impl.transaction.Span;
 import co.elastic.apm.agent.impl.transaction.TraceContext;
@@ -44,7 +44,7 @@ import static net.bytebuddy.matcher.ElementMatchers.returns;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class ApacheHttpClientInstrumentation extends ElasticApmInstrumentation {
+public class ApacheHttpClientInstrumentation extends SophonApmInstrumentation {
 
     @Advice.OnMethodEnter(suppress = Throwable.class)
     private static void onBeforeExecute(@Advice.Argument(0) HttpRoute route,

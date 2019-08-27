@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.spring.webmvc;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.bci.VisibleForAdvice;
 import co.elastic.apm.agent.impl.transaction.Transaction;
 import net.bytebuddy.asm.Advice;
@@ -53,7 +53,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
  * Supports Spring MVC 3.x-5.x
  * </p>
  */
-public class SpringTransactionNameInstrumentation extends ElasticApmInstrumentation {
+public class SpringTransactionNameInstrumentation extends SophonApmInstrumentation {
 
     /**
      * Instrumenting well defined interfaces like {@link org.springframework.web.servlet.HandlerAdapter}

@@ -19,6 +19,9 @@
  */
 package co.elastic.apm.agent.objectpool;
 
+/**
+ * 回收接口，可复用的重置状态
+ */
 public interface Recyclable {
 
     void resetState();

@@ -23,6 +23,11 @@ import org.stagemonitor.configuration.ConfigurationOption;
 
 import javax.annotation.Nullable;
 
+/**
+ * 区间校验
+ *
+ * @param <T>
+ */
 public class RangeValidator<T extends Comparable> implements ConfigurationOption.Validator<T> {
 
     @Nullable

@@ -25,6 +25,9 @@ import javax.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
+/**
+ * 正则表达是验证
+ */
 public class RegexValidator implements ConfigurationOption.Validator<String> {
 
     private final Pattern pattern;

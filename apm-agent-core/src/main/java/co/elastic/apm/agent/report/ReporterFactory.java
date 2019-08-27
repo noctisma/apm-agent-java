@@ -25,8 +25,7 @@ import javax.annotation.Nullable;
 
 public class ReporterFactory {
 
-    public Reporter createReporter(ConfigurationRegistry configurationRegistry, @Nullable String frameworkName,
-                                   @Nullable String frameworkVersion) {
+    public Reporter createReporter(ConfigurationRegistry configurationRegistry) {
 //        return new ApmServerReporter(true, reporterConfiguration, reportingEventHandler);
         return new LocalLogReporter();
     }

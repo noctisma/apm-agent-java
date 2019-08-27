@@ -37,7 +37,6 @@ import co.elastic.apm.agent.objectpool.Allocator;
 import co.elastic.apm.agent.objectpool.ObjectPool;
 import co.elastic.apm.agent.objectpool.impl.QueueBasedObjectPool;
 import co.elastic.apm.agent.report.Reporter;
-import co.elastic.apm.agent.report.ReporterConfiguration;
 import co.elastic.apm.agent.util.DependencyInjectingServiceLoader;
 import com.blogspot.mydailyjava.weaklockfree.WeakConcurrentMap;
 import org.jctools.queues.atomic.AtomicQueueFactory;
@@ -107,7 +106,7 @@ public class ElasticApmTracer {
     ElasticApmTracer(ConfigurationRegistry configurationRegistry, Reporter reporter) {
         this.configurationRegistry = configurationRegistry;
         this.reporter = reporter;
-        int maxPooledElements = configurationRegistry.getConfig(ReporterConfiguration.class).getMaxQueueSize() * 2;
+        int maxPooledElements = 512 * 2;
         coreConfiguration = configurationRegistry.getConfig(CoreConfiguration.class);
         transactionPool = QueueBasedObjectPool.ofRecyclable(AtomicQueueFactory.<Transaction>newQueue(createBoundedMpmc(maxPooledElements)), false,
             new Allocator<Transaction>() {
@@ -254,13 +253,10 @@ public class ElasticApmTracer {
     }
 
     /**
-     * Starts a span with a given parent context.
-     * <p>
-     * This method makes it possible to start a span after the parent has already ended.
-     * </p>
+     * 使用指定父上下文进行Span
      *
-     * @param parentContext the trace context of the parent
-     * @return a new started span
+     * @param parentContext 父级的跟踪上下文
+     * @return 新的Span
      */
     public <T> Span startSpan(TraceContext.ChildContextCreator<T> childContextCreator, T parentContext) {
         return startSpan(childContextCreator, parentContext, -1);
@@ -271,9 +267,9 @@ public class ElasticApmTracer {
     }
 
     /**
-     * @param parentContext the trace context of the parent
+     * @param parentContext 父级的跟踪上下文
      * @param epochMicros   the start timestamp of the span in microseconds after epoch
-     * @return a new started span
+     * @return 新的Span
      * @see #startSpan(TraceContext.ChildContextCreator, Object)
      */
     public <T> Span startSpan(TraceContext.ChildContextCreator<T> childContextCreator, T parentContext, long epochMicros) {

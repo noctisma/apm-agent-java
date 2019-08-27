@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.bci.methodmatching;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.bci.bytebuddy.SimpleMethodSignatureOffsetMappingFactory;
 import co.elastic.apm.agent.configuration.CoreConfiguration;
 import co.elastic.apm.agent.impl.transaction.AbstractSpan;
@@ -50,7 +50,7 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class TraceMethodInstrumentation extends ElasticApmInstrumentation {
+public class TraceMethodInstrumentation extends SophonApmInstrumentation {
 
     protected final MethodMatcher methodMatcher;
 

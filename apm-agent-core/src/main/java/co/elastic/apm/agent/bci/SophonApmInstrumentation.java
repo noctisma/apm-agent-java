@@ -44,7 +44,7 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  * The constructor can optionally have a {@link ElasticApmTracer} parameter.
  * </p>
  */
-public abstract class ElasticApmInstrumentation {
+public abstract class SophonApmInstrumentation {
 
     @Nullable
     @VisibleForAdvice
@@ -61,7 +61,7 @@ public abstract class ElasticApmInstrumentation {
      */
     static void staticInit(ElasticApmTracer tracer) {
         // allow re-init with a different tracer
-        ElasticApmInstrumentation.tracer = tracer;
+        SophonApmInstrumentation.tracer = tracer;
     }
 
     @Nullable

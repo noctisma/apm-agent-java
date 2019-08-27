@@ -75,7 +75,7 @@ public class AgentMain {
             }
             // invoking via reflection to make sure the class is not loaded by the system classloader,
             // but only from the bootstrap classloader
-            Class.forName("co.elastic.apm.agent.bci.ElasticApmAgent", true, null)
+            Class.forName("co.elastic.apm.agent.bci.SophonApmAgent", true, null)
                 .getMethod("initialize", String.class, Instrumentation.class, File.class)
                 .invoke(null, agentArguments, instrumentation, agentJarFile);
             System.setProperty("ElasticApm.attached", Boolean.TRUE.toString());

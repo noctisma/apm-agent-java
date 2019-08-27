@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package co.elastic.apm.agent.configuration;
+package co.elastic.apm.agent.configuration.source;
 
 import org.stagemonitor.configuration.source.AbstractConfigurationSource;
 import org.stagemonitor.util.StringUtils;
@@ -25,6 +25,10 @@ import org.stagemonitor.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * agent参数配置数据源
+ * key1=value1;key2=value2
+ */
 public class AgentArgumentsConfigurationSource extends AbstractConfigurationSource {
 
     private final Map<String, String> config;

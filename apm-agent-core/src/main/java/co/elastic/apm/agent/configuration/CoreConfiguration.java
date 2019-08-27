@@ -19,7 +19,6 @@
  */
 package co.elastic.apm.agent.configuration;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
 import co.elastic.apm.agent.bci.methodmatching.MethodMatcher;
 import co.elastic.apm.agent.bci.methodmatching.configuration.MethodMatcherValueConverter;
 import co.elastic.apm.agent.configuration.validation.RegexValidator;
@@ -32,14 +31,13 @@ import org.stagemonitor.configuration.converter.ListValueConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.TreeSet;
 
 import static co.elastic.apm.agent.configuration.validation.RangeValidator.isInRange;
 
+/**
+ * 核心配置类
+ */
 public class CoreConfiguration extends ConfigurationOptionProvider {
 
     public static final String ACTIVE = "active";
@@ -119,7 +117,7 @@ public class CoreConfiguration extends ConfigurationOptionProvider {
             "To reduce overhead and storage requirements, you can set the sample rate to a value between 0.0 and 1.0. " +
             "We still record overall time and the result for unsampled transactions, but no context information, labels, or spans.")
         .dynamic(true)
-        .addValidator(isInRange(0d, 1d))
+//        .addValidator(isInRange(0d, 1d))
         .buildWithDefault(1.0);
 
     private final ConfigurationOption<Integer> transactionMaxSpans = ConfigurationOption.integerOption()
@@ -137,20 +135,20 @@ public class CoreConfiguration extends ConfigurationOptionProvider {
         .key("sanitize_field_names")
         .configurationCategory(CORE_CATEGORY)
         .description("Sometimes it is necessary to sanitize the data sent to Elastic APM,\n" +
-            "e.g. remove sensitive data.\n" +
-            "\n" +
-            "Configure a list of wildcard patterns of field names which should be sanitized.\n" +
-            "These apply for example to HTTP headers and `application/x-www-form-urlencoded` data.\n" +
-            "\n" +
-            WildcardMatcher.DOCUMENTATION + "\n" +
-            "\n" +
-            "NOTE: Data in the query string is considered non-sensitive,\n" +
-            "as sensitive information should not be sent in the query string.\n" +
-            "See https://www.owasp.org/index.php/Information_exposure_through_query_strings_in_url for more information\n" +
-            "\n" +
-            "NOTE: Review the data captured by Elastic APM carefully to make sure it does not capture sensitive information.\n" +
-            "If you do find sensitive data in the Elasticsearch index,\n" +
-            "you should add an additional entry to this list (make sure to also include the default entries)."
+                "e.g. remove sensitive data.\n" +
+                "\n" +
+                "Configure a list of wildcard patterns of field names which should be sanitized.\n" +
+                "These apply for example to HTTP headers and `application/x-www-form-urlencoded` data.\n" +
+                "\n" +
+                WildcardMatcher.DOCUMENTATION + "\n" +
+                "\n" +
+                "NOTE: Data in the query string is considered non-sensitive,\n" +
+                "as sensitive information should not be sent in the query string.\n" +
+                "See https://www.owasp.org/index.php/Information_exposure_through_query_strings_in_url for more information\n" +
+                "\n" +
+                "NOTE: Review the data captured by Elastic APM carefully to make sure it does not capture sensitive information.\n" +
+                "If you do find sensitive data in the Elasticsearch index,\n" +
+                "you should add an additional entry to this list (make sure to also include the default entries)."
             /* A disadvantage of this approach is when a user adds a custom value,
              * they don't automatically pick up new default values.
              * But the possibility to remove default values which are leading to false positive for the user

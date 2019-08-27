@@ -69,10 +69,12 @@ import static net.bytebuddy.matcher.ElementMatchers.nameEndsWith;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.not;
 
-public class ElasticApmAgent {
+public class SophonApmAgent {
 
-    // Don't init logger as a static field, logging needs to be initialized first see also issue #593
-    // private static final Logger doNotUseThisLogger = LoggerFactory.getLogger(ElasticApmAgent.class);
+    /**
+     * 这里不要使用静态的logger
+     */
+    // private static final Logger doNotUseThisLogger = LoggerFactory.getLogger(SophonApmAgent.class);
 
     private static final ConcurrentMap<String, MatcherTimer> matcherTimers = new ConcurrentHashMap<>();
     @Nullable
@@ -89,7 +91,7 @@ public class ElasticApmAgent {
      * @param agentJarFile    a reference to the agent jar on the file system
      */
     public static void initialize(String agentArguments, Instrumentation instrumentation, File agentJarFile) {
-        ElasticApmAgent.agentJarFile = agentJarFile;
+        SophonApmAgent.agentJarFile = agentJarFile;
         initInstrumentation(new ElasticApmTracerBuilder(agentArguments).build(), instrumentation);
     }
 
@@ -98,8 +100,8 @@ public class ElasticApmAgent {
     }
 
     @Nonnull
-    private static Iterable<ElasticApmInstrumentation> loadInstrumentations(ElasticApmTracer tracer) {
-        final List<ElasticApmInstrumentation> instrumentations = DependencyInjectingServiceLoader.load(ElasticApmInstrumentation.class, tracer);
+    private static Iterable<SophonApmInstrumentation> loadInstrumentations(ElasticApmTracer tracer) {
+        final List<SophonApmInstrumentation> instrumentations = DependencyInjectingServiceLoader.load(SophonApmInstrumentation.class, tracer);
         for (MethodMatcher traceMethod : tracer.getConfig(CoreConfiguration.class).getTraceMethods()) {
             instrumentations.add(new TraceMethodInstrumentation(traceMethod));
         }
@@ -108,7 +110,7 @@ public class ElasticApmAgent {
     }
 
     public static void initInstrumentation(final ElasticApmTracer tracer, Instrumentation instrumentation,
-                                           Iterable<ElasticApmInstrumentation> instrumentations) {
+                                           Iterable<SophonApmInstrumentation> instrumentations) {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -117,20 +119,20 @@ public class ElasticApmAgent {
             }
         });
         matcherTimers.clear();
-        final Logger logger = LoggerFactory.getLogger(ElasticApmAgent.class);
-        if (ElasticApmAgent.instrumentation != null) {
+        final Logger logger = LoggerFactory.getLogger(SophonApmAgent.class);
+        if (SophonApmAgent.instrumentation != null) {
             logger.warn("Instrumentation has already been initialized");
             return;
         }
-        ElasticApmInstrumentation.staticInit(tracer);
+        SophonApmInstrumentation.staticInit(tracer);
         final CoreConfiguration coreConfiguration = tracer.getConfig(CoreConfiguration.class);
-        ElasticApmAgent.instrumentation = instrumentation;
+        SophonApmAgent.instrumentation = instrumentation;
         final ByteBuddy byteBuddy = new ByteBuddy()
             .with(TypeValidation.of(logger.isDebugEnabled()))
             .with(FailSafeDeclaredMethodsCompiler.INSTANCE);
         AgentBuilder agentBuilder = getAgentBuilder(byteBuddy, coreConfiguration, logger);
         int numberOfAdvices = 0;
-        for (final ElasticApmInstrumentation advice : instrumentations) {
+        for (final SophonApmInstrumentation advice : instrumentations) {
             if (isIncluded(advice, coreConfiguration)) {
                 numberOfAdvices++;
                 agentBuilder = applyAdvice(tracer, agentBuilder, advice);
@@ -138,10 +140,10 @@ public class ElasticApmAgent {
         }
         logger.debug("Applied {} advices", numberOfAdvices);
 
-        resettableClassFileTransformer = agentBuilder.installOn(ElasticApmAgent.instrumentation);
+        resettableClassFileTransformer = agentBuilder.installOn(SophonApmAgent.instrumentation);
     }
 
-    private static boolean isIncluded(ElasticApmInstrumentation advice, CoreConfiguration coreConfiguration) {
+    private static boolean isIncluded(SophonApmInstrumentation advice, CoreConfiguration coreConfiguration) {
         final Collection<String> disabledInstrumentations = coreConfiguration.getDisabledInstrumentations();
         return !isGroupDisabled(disabledInstrumentations, advice.getInstrumentationGroupNames()) && isInstrumentationEnabled(advice, coreConfiguration);
     }
@@ -155,13 +157,13 @@ public class ElasticApmAgent {
         return false;
     }
 
-    private static boolean isInstrumentationEnabled(ElasticApmInstrumentation advice, CoreConfiguration coreConfiguration) {
+    private static boolean isInstrumentationEnabled(SophonApmInstrumentation advice, CoreConfiguration coreConfiguration) {
         return advice.includeWhenInstrumentationIsDisabled() || coreConfiguration.isInstrument();
     }
 
     private static AgentBuilder applyAdvice(final ElasticApmTracer tracer, final AgentBuilder agentBuilder,
-                                            final ElasticApmInstrumentation advice) {
-        final Logger logger = LoggerFactory.getLogger(ElasticApmAgent.class);
+                                            final SophonApmInstrumentation advice) {
+        final Logger logger = LoggerFactory.getLogger(SophonApmAgent.class);
         logger.debug("Applying advice {}", advice.getClass().getName());
         final boolean classLoadingMatchingPreFilter = tracer.getConfig(CoreConfiguration.class).isClassLoadingMatchingPreFilter();
         final boolean typeMatchingWithNamePreFilter = tracer.getConfig(CoreConfiguration.class).isTypeMatchingWithNamePreFilter();
@@ -239,7 +241,7 @@ public class ElasticApmAgent {
             });
     }
 
-    private static MatcherTimer getOrCreateTimer(Class<? extends ElasticApmInstrumentation> adviceClass) {
+    private static MatcherTimer getOrCreateTimer(Class<? extends SophonApmInstrumentation> adviceClass) {
         final String name = adviceClass.getName();
         MatcherTimer timer = matcherTimers.get(name);
         if (timer == null) {
@@ -263,7 +265,7 @@ public class ElasticApmAgent {
     }
 
     // may help to debug classloading problems
-    private static void logClassLoaderHierarchy(@Nullable ClassLoader classLoader, Logger logger, ElasticApmInstrumentation advice) {
+    private static void logClassLoaderHierarchy(@Nullable ClassLoader classLoader, Logger logger, SophonApmInstrumentation advice) {
         logger.trace("Advice {} is loaded by {}", advice.getClass().getName(), advice.getClass().getClassLoader());
         if (classLoader != null) {
             boolean canLoadAgent = false;

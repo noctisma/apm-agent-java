@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.logging;
 
-import co.elastic.apm.agent.bci.ElasticApmAgent;
+import co.elastic.apm.agent.bci.SophonApmAgent;
 import org.slf4j.event.Level;
 import org.slf4j.impl.SimpleLogger;
 import org.stagemonitor.configuration.ConfigurationOption;
@@ -121,7 +121,7 @@ public class LoggingConfiguration extends ConfigurationOptionProvider {
     public static void init(List<ConfigurationSource> sources) {
         setLogLevel(getValue(LOG_LEVEL_KEY, sources,
             getValue(DEPRECATED_LOG_LEVEL_KEY, sources, Level.INFO.toString())));
-        setLogFileLocation(ElasticApmAgent.getAgentHome(), getValue(LOG_FILE_KEY, sources,
+        setLogFileLocation(SophonApmAgent.getAgentHome(), getValue(LOG_FILE_KEY, sources,
             getValue(DEPRECATED_LOG_FILE_KEY, sources, DEFAULT_LOG_FILE)));
     }
 

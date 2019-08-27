@@ -19,12 +19,12 @@
  */
 package co.elastic.apm.agent.opentracing.impl;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 
 import java.util.Collection;
 import java.util.Collections;
 
-public abstract class OpenTracingBridgeInstrumentation extends ElasticApmInstrumentation {
+public abstract class OpenTracingBridgeInstrumentation extends SophonApmInstrumentation {
     @Override
     public boolean includeWhenInstrumentationIsDisabled() {
         return true;

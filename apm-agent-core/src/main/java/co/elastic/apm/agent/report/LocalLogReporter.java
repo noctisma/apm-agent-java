@@ -25,16 +25,14 @@ import co.elastic.apm.agent.impl.transaction.Transaction;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.stagemonitor.util.IOUtils;
 
-import java.io.ByteArrayInputStream;
 import java.util.concurrent.Future;
 
-public class LocalLogReporter implements Reporter{
+public class LocalLogReporter implements Reporter {
 
     private static final Logger transLog = LoggerFactory.getLogger("SOPHON_TRANS");
     private static final Logger spanLog = LoggerFactory.getLogger("SOPHON_SPAN");
-
+    private static final Logger errorLog = LoggerFactory.getLogger("SOPHON_ERROR");
 
     @Override
     public void report(Transaction transaction) {
@@ -44,7 +42,7 @@ public class LocalLogReporter implements Reporter{
 
     @Override
     public void report(Span span) {
-        transLog.info(span.toString());
+        spanLog.info(span.toString());
         spanLog.info(JSON.toJSONString(span.getContext().toString()));
     }
 
@@ -70,6 +68,7 @@ public class LocalLogReporter implements Reporter{
 
     @Override
     public void report(ErrorCapture error) {
-
+        errorLog.info(error.toString());
+        errorLog.info(JSON.toJSONString(error.getContext().toString()));
     }
 }

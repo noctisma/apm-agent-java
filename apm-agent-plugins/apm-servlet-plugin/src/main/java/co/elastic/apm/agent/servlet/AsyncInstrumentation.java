@@ -19,7 +19,7 @@
  */
 package co.elastic.apm.agent.servlet;
 
-import co.elastic.apm.agent.bci.ElasticApmInstrumentation;
+import co.elastic.apm.agent.bci.SophonApmInstrumentation;
 import co.elastic.apm.agent.bci.HelperClassManager;
 import co.elastic.apm.agent.bci.VisibleForAdvice;
 import co.elastic.apm.agent.impl.ElasticApmTracer;
@@ -57,7 +57,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
  * (see {@link StartAsyncInstrumentation.StartAsyncAdvice#onExitStartAsync(AsyncContext)}
  * and {@link AsyncContextInstrumentation.AsyncContextStartAdvice#onEnterAsyncContextStart(Runnable)}).
  */
-public abstract class AsyncInstrumentation extends ElasticApmInstrumentation {
+public abstract class AsyncInstrumentation extends SophonApmInstrumentation {
 
     private static final String SERVLET_API_ASYNC_GROUP_NAME = "servlet-api-async";
     @Nullable
